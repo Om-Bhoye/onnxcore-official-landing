@@ -1,10 +1,30 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Play, Sparkles } from 'lucide-react';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import BitcoinButton from '@/components/landingpage/BitcoinButton';
 import gsap from 'gsap';
+import { motion, AnimatePresence } from 'framer-motion';
+
+// Two stat groups that cycle
+const statCycles = [
+  [
+    { value: '$500K+', label: 'Total Volume' },
+    { value: '$100K+', label: 'Daily Flow' },
+  ],
+  [
+    { value: '85%', label: 'Completion' },
+    { value: '<2%', label: 'Dispute' },
+  ],
+];
+
+// Duration each cycle stays visible (in ms)
+const CYCLE_DURATION = 3000;
+
+// Smooth cubic-bezier easing
+const smoothEase = [0.16, 1, 0.3, 1] as [number, number, number, number];
 
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -15,209 +35,258 @@ export default function Hero() {
   const glowRef = useRef<HTMLDivElement>(null);
   const star1Ref = useRef<HTMLImageElement>(null);
   const star2Ref = useRef<HTMLImageElement>(null);
-  const statsRef = useRef<HTMLDivElement>(null);
-  const sparkleRef = useRef<HTMLDivElement>(null);
+
+  // Controls when stat cycling begins (after GSAP finishes)
+  const [statsReady, setStatsReady] = useState(false);
+  // Which cycle is currently active (0 or 1)
+  const [activeCycle, setActiveCycle] = useState(0);
 
   // GSAP entrance animation
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.set([sparkleRef.current, headlineRef.current, subheadlineRef.current, ctaRef.current, statsRef.current], {
+      gsap.set([headlineRef.current, subheadlineRef.current, ctaRef.current], {
         opacity: 0,
-        y: 20,
+        y: 24,
       });
       gsap.set(coinsRef.current, {
         opacity: 0,
-        x: 40,
-        scale: 0.95,
+        x: 60,
+        scale: 0.92,
       });
       gsap.set(glowRef.current, {
         opacity: 0,
-        scale: 0.8,
+        scale: 0.9,
       });
       gsap.set([star1Ref.current, star2Ref.current], {
         opacity: 0,
-        scale: 0.5,
+        scale: 0.7,
+        rotation: -90,
       });
 
-      const tl = gsap.timeline({ delay: 0.2 });
+      const tl = gsap.timeline({ delay: 0.3 });
 
-      tl.to(glowRef.current, {
+      tl.to(star1Ref.current, {
         opacity: 1,
         scale: 1,
-        duration: 1.2,
-        ease: 'power3.out',
+        rotation: 0,
+        duration: 0.7,
+        ease: 'back.out(1.6)',
       })
-      .to(coinsRef.current, {
-        opacity: 1,
-        x: 0,
-        scale: 1,
-        duration: 1.1,
-        ease: 'power3.out',
-      }, '-=0.8')
-      .to([star1Ref.current, star2Ref.current], {
-        opacity: 1,
-        scale: 1,
-        duration: 0.8,
-        stagger: 0.2,
-        ease: 'back.out(1.7)',
-      }, '-=0.6')
-      .to(sparkleRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 0.6,
-        ease: 'power3.out',
-      }, '-=0.4')
-      .to(headlineRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        ease: 'power3.out',
-      }, '-=0.5')
-      .to(subheadlineRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 0.6,
-        ease: 'power3.out',
-      }, '-=0.5')
-      .to(ctaRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 0.6,
-        ease: 'power3.out',
-      }, '-=0.4')
-      .to(statsRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 0.6,
-        ease: 'power3.out',
-      }, '-=0.3');
+        .to(
+          star2Ref.current,
+          {
+            opacity: 0.6,
+            scale: 1,
+            rotation: 0,
+            duration: 0.7,
+            ease: 'back.out(1.6)',
+          },
+          '-=0.5'
+        )
+        .to(
+          glowRef.current,
+          {
+            opacity: 1,
+            scale: 1,
+            duration: 1.1,
+            ease: 'power3.out',
+          },
+          '-=0.6'
+        )
+        .to(
+          coinsRef.current,
+          {
+            opacity: 1,
+            x: 0,
+            scale: 1,
+            duration: 1,
+            ease: 'power3.out',
+          },
+          '-=0.9'
+        )
+        .to(
+          headlineRef.current,
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: 'power3.out',
+          },
+          '-=0.7'
+        )
+        .to(
+          subheadlineRef.current,
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            ease: 'power3.out',
+          },
+          '-=0.5'
+        )
+        .to(
+          ctaRef.current,
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            ease: 'power3.out',
+            onComplete: () => setStatsReady(true),
+          },
+          '-=0.4'
+        );
     }, sectionRef);
 
     return () => ctx.revert();
   }, []);
 
+  // Cycle loop: switch between stat groups every CYCLE_DURATION
+  useEffect(() => {
+    if (!statsReady) return;
+    const interval = setInterval(() => {
+      setActiveCycle((prev) => (prev + 1) % statCycles.length);
+    }, CYCLE_DURATION);
+    return () => clearInterval(interval);
+  }, [statsReady]);
+
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen w-full flex items-center overflow-hidden pt-20"
+      className="relative min-h-screen w-full flex items-center overflow-hidden pt-24 lg:pt-0"
     >
       {/* Grid Pattern Background */}
-      <div className="absolute inset-0 grid-pattern opacity-20" />
+      <div className="absolute inset-0 grid-pattern opacity-50" />
 
       {/* Radial Glow Behind Coins */}
       <div
         ref={glowRef}
-        className="absolute right-[5vw] top-[15vh] w-[50vw] h-[50vw] glow-violet-soft rounded-full blur-3xl opacity-50"
+        className="absolute right-[5vw] top-[15vh] w-[45vw] h-[45vw] glow-violet-soft rounded-full blur-3xl"
       />
 
-      {/* Decorative Stars from reference image */}
-      <div ref={sparkleRef} className="absolute left-[8vw] top-[14vh] z-20">
-        <Sparkles className="w-10 h-10 text-white opacity-80" />
-      </div>
-
+      {/* Decorative Stars */}
       <img
         ref={star1Ref}
         src="/images/star.png"
         alt=""
-        className="absolute left-[15vw] top-[25vh] w-6 h-6 object-contain star-twinkle z-10 opacity-40"
+        className="absolute left-[6vw] top-[18vh] w-10 h-10 md:w-11 md:h-11 object-contain star-twinkle z-10"
       />
       <img
         ref={star2Ref}
         src="/images/star.png"
         alt=""
-        className="absolute right-[15vw] bottom-[35vh] w-8 h-8 object-contain star-twinkle z-10 opacity-60"
-        style={{ animationDelay: '1.5s' }}
+        className="absolute right-[15vw] bottom-[25vh] w-6 h-6 md:w-8 md:h-8 object-contain star-twinkle z-10"
+        style={{ animationDelay: '1s' }}
       />
 
       {/* Content Container */}
-      <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
+      <div className="relative z-10 w-full max-w-[1280px] mx-auto px-6 sm:px-8 lg:px-12 pt-32 lg:pt-36 pb-12">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-8">
           {/* Left Content */}
-          <div className="flex-1 max-w-2xl lg:max-w-[52vw]">
-            {/* Simple Eyebrow Capsule */}
-            <div className="inline-flex items-center px-5 py-2 bg-[#14151C] border border-white/10 rounded-full mb-10">
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/40">
-                OnnXcore Platform
-              </span>
-            </div>
+          <div className="flex-1 max-w-xl lg:max-w-2xl flex flex-col">
+            {/* Eyebrow - Centered relative to headline on all screens */}
+            <p className="self-center lg:self-center inline-flex items-center h-10 px-6 bg-white/5 border border-white/10 rounded-full mb-8 text-xs uppercase tracking-[0.14em] text-white/70 transition-all duration-300">
+              OnnXcore Platform
+            </p>
 
-            {/* Headline with Serif Italic Gradient */}
+            {/* Headline */}
             <h1
               ref={headlineRef}
-              className="font-sans font-bold text-5xl sm:text-6xl lg:text-5xl xl:text-7xl text-white leading-[1.05] tracking-tight mb-8"
+              className="font-sans font-bold text-4xl sm:text-4xl lg:text-5xl xl:text-6xl text-white leading-[1.1] tracking-tight mb-10 text-left flex flex-col gap-1 sm:gap-2"
             >
-              Structured USDT <br />
-              Trading <br />
-              for Consistent <br />
-              <span className="font-serif italic font-medium bg-gradient-to-r from-[#3872f0] to-[#F7931A] bg-clip-text text-transparent block mt-3">Daily Earnings</span>
+              <span className="whitespace-nowrap">Structured USDT Trading</span>
+              <span className="whitespace-nowrap">Consistent Growth</span>
+              <span className="whitespace-nowrap">
+                <span className="font-serif italic font-medium text-gradient">Daily Earnings</span>
+              </span>
             </h1>
 
-            {/* Subheadline - light gray and leading */}
+            {/* Subheadline */}
             <p
               ref={subheadlineRef}
-              className="text-white/40 text-base lg:text-lg leading-relaxed mb-12 max-w-lg"
+              className="text-cobalt-200 text-base lg:text-lg leading-relaxed mb-10 max-w-lg text-left"
             >
               Access a controlled P2P trading environment with verified
               counterparties, fast settlements, and built-in risk management.
             </p>
 
-            {/* CTAs - Matches reference borders and style */}
-            <div ref={ctaRef} className="flex flex-wrap gap-6 mb-20">
-              <BitcoinButton
-                showArrow
-                className="px-10 py-7 text-base border-white/30 shadow-glow hover:shadow-glow-lg transition-all"
-              >
-                Become a Vendor
-              </BitcoinButton>
+            {/* CTAs */}
+            <div ref={ctaRef} className="flex flex-wrap gap-4 mb-10">
+              <Link href="/vendor/apply">
+                <BitcoinButton
+                  showArrow
+                  className="hover:scale-105"
+                >
+                  Become a Vendor
+                </BitcoinButton>
+              </Link>
               <Button
                 variant="outline"
-                className="bg-transparent hover:bg-white/5 text-white border-white/10 rounded-full px-10 py-7 text-base font-semibold transition-all flex items-center gap-3"
+                className="bg-transparent hover:bg-white/5 text-white border border-white/20 rounded-full px-6 lg:px-8 py-3 lg:py-6 text-sm lg:text-base font-medium transition-all duration-300 hover:scale-105 flex items-center gap-2"
               >
-                <div className="w-6 h-6 flex items-center justify-center rounded-full bg-white/10 group-hover:bg-white/20 transition-colors">
-                    <Play className="w-3 h-3 fill-white ml-0.5" />
-                </div>
+                <Play className="w-4 h-4" />
                 View Platform
               </Button>
             </div>
 
-            {/* Static Stats line from Design */}
-            <div
-              ref={statsRef}
-              className="flex items-center gap-2"
-            >
-              <span className="text-white font-bold text-xl lg:text-2xl tracking-tight">$500K+</span>
-              <span className="text-white/30 text-sm font-medium">Total Volume</span>
+            {/* Trust Metrics — Cycling Carousel */}
+            <div className="relative h-14 overflow-hidden">
+              <AnimatePresence mode="wait">
+                {statsReady && (
+                  <motion.div
+                    key={activeCycle}
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{
+                      duration: 0.6,
+                      ease: smoothEase,
+                    }}
+                    className="absolute inset-0 flex items-center gap-6 lg:gap-8"
+                  >
+                    {statCycles[activeCycle].map((stat, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                          duration: 0.5,
+                          delay: index * 0.15,
+                          ease: smoothEase,
+                        }}
+                        className="flex items-center gap-2"
+                      >
+                        <span className="text-white font-heading font-bold text-lg lg:text-xl">
+                          {stat.value}
+                        </span>
+                        <span className="text-cobalt-200 text-xs lg:text-sm">
+                          {stat.label}
+                        </span>
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
 
-          {/* Right Content - 3D Coins with sparkle highlights */}
+          {/* Right Content - Crypto Coins */}
           <div
             ref={coinsRef}
             className="flex-1 flex justify-center lg:justify-end relative"
           >
-            <div className="relative w-[70vw] max-w-[480px] lg:w-[34vw] lg:max-w-none">
+            <div className="relative w-[55vw] max-w-[380px] lg:w-[26vw] lg:max-w-none">
               <img
                 src="/images/crypto-coins.png"
                 alt="3D Cryptocurrency Coins"
-                className="w-full h-auto object-contain float-slow relative z-10 drop-shadow-[0_0_50px_rgba(56,114,240,0.15)]"
+                className="w-full h-auto object-contain float-slow"
               />
-              {/* Extra sparkle elements around coins to match design */}
-              <div className="absolute top-1/4 -right-10 animate-twinkle opacity-60">
-                <Sparkles className="w-6 h-6 text-white" />
-              </div>
-              <div className="absolute bottom-1/4 -left-12 animate-twinkle opacity-40" style={{ animationDelay: '1s' }}>
-                <Sparkles className="w-4 h-4 text-white" />
-              </div>
-              <div className="absolute top-1/2 -right-8 animate-twinkle opacity-30" style={{ animationDelay: '2s' }}>
-                <Sparkles className="w-3 h-3 text-white" />
-              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Deep Bottom Fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#03040C] to-transparent pointer-events-none" />
+      {/* Bottom Gradient Fade */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#03040C] to-transparent pointer-events-none" />
     </section>
   );
 }
