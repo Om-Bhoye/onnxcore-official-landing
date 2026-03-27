@@ -15,7 +15,7 @@ export const USER_ROLES = [
 export type UserRole = (typeof USER_ROLES)[number];
 
 /** Roles that can self-register via the signup page */
-export const SELF_REGISTER_ROLES: UserRole[] = ['super_admin', 'c_level_admin', 'admin'];
+export const SELF_REGISTER_ROLES: UserRole[] = [...USER_ROLES];
 
 /** Roles that require approval from a Super Admin or C-Level Admin */
 export const APPROVAL_REQUIRED_ROLES: UserRole[] = [
@@ -31,7 +31,7 @@ export const APPROVAL_REQUIRED_ROLES: UserRole[] = [
 export const APPROVER_ROLES: UserRole[] = ['super_admin', 'c_level_admin'];
 
 export type UserStatus = 'pending' | 'active' | 'suspended';
-export type KYCStatus = 'not_started' | 'pending' | 'completed';
+export type KYCStatus = 'not_started' | 'pending' | 'completed' | 'rejected';
 
 export interface IUser extends Document {
     name: string;
@@ -41,7 +41,10 @@ export interface IUser extends Document {
     role: UserRole;
     status: UserStatus;
     kycStatus: KYCStatus;
+    isActive: boolean;
     approvedBy?: mongoose.Types.ObjectId;
+    profileImage?: string;
+    referralCode?: string;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -84,10 +87,22 @@ const UserSchema: Schema = new Schema(
             enum: ['not_started', 'pending', 'completed'],
             default: 'not_started',
         },
+        isActive: {
+            type: Boolean,
+            default: true,
+        },
         approvedBy: {
             type: Schema.Types.ObjectId,
             ref: 'User',
             default: null,
+        },
+        profileImage: {
+            type: String,
+            default: '',
+        },
+        referralCode: {
+            type: String,
+            default: '',
         },
     },
     { timestamps: true }

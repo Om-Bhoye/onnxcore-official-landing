@@ -1,26 +1,51 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, UserCircle, LogOut, LayoutDashboard, ChevronDown } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    // Fetch user status
+    fetch('/api/user/me')
+      .then(res => res.ok ? res.json() : null)
+      .then(data => setUser(data))
+      .catch(() => setUser(null));
+
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      const res = await fetch('/api/auth/logout', { method: 'POST' });
+      if (res.ok) {
+        setUser(null);
+        router.push('/');
+        router.refresh();
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
 
   const navItems = [
     { label: 'Home', href: '/' },
     { label: 'About', href: '/#about' },
     { label: 'Execution', href: '/#execution' },
     { label: 'Security', href: '/#security' },
+    ...(user ? [{ label: 'Contact Us', href: '/contact' }] : []),
   ];
 
   return (
@@ -55,15 +80,48 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Right Side — Contact Us CTA */}
-          <div className="hidden md:flex items-center flex-shrink-0">
-            <Link
-              href="/contact"
-              className="bg-violet text-white px-7 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 hover:brightness-110 hover:shadow-glow flex items-center gap-1.5 hover:scale-[1.02] active:scale-[0.98]"
-            >
-              Contact Us
-              <span>→</span>
-            </Link>
+          {/* Right Side — CTA or Profile */}
+          <div className="hidden md:flex items-center flex-shrink-0 gap-4">
+            {user ? (
+              <div className="relative">
+                <button
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-50 border border-gray-100 transition-all hover:bg-gray-100"
+                >
+                  <UserCircle className="w-5 h-5 text-gray-600" />
+                  <span className="text-sm font-semibold text-gray-700 capitalize">{user.name}</span>
+                  <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {isDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-2xl shadow-xl py-2 z-50 animate-in fade-in slide-in-from-top-2">
+                    <Link
+                      href="/dashboard"
+                      className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+                      onClick={() => setIsDropdownOpen(false)}
+                    >
+                      <LayoutDashboard className="w-4 h-4" />
+                      Dashboard
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors border-t border-gray-50 mt-1"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      Sign Out
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                href="/contact"
+                className="bg-violet text-white px-7 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 hover:brightness-110 hover:shadow-glow flex items-center gap-1.5 hover:scale-[1.02] active:scale-[0.98]"
+              >
+                Contact Us
+                <span>→</span>
+              </Link>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -94,13 +152,33 @@ export default function Navbar() {
                 </a>
               ))}
               <div className="border-t border-gray-100 pt-4 mt-2">
-                <Link
-                  href="/contact"
-                  className="bg-violet text-white w-full text-center py-3 rounded-xl font-semibold block hover:brightness-110 transition-all duration-300"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Contact Us →
-                </Link>
+                {user ? (
+                  <div className="flex flex-col gap-2">
+                    <Link
+                      href="/dashboard"
+                      className="flex items-center justify-center gap-2 bg-gray-50 text-gray-700 w-full py-3 rounded-xl font-semibold transition-all"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <LayoutDashboard className="w-5 h-5" />
+                      Dashboard
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="flex items-center justify-center gap-2 bg-red-50 text-red-500 w-full py-3 rounded-xl font-semibold transition-all"
+                    >
+                      <LogOut className="w-5 h-5" />
+                      Sign Out
+                    </button>
+                  </div>
+                ) : (
+                  <Link
+                    href="/contact"
+                    className="bg-violet text-white w-full text-center py-3 rounded-xl font-semibold block hover:brightness-110 transition-all duration-300"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Contact Us →
+                  </Link>
+                )}
               </div>
             </div>
           </div>

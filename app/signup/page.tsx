@@ -25,7 +25,7 @@ export default function SignupPage() {
             });
 
             if (res.ok) {
-                router.push('/login');
+                router.push('/dashboard');
             } else {
                 const data = await res.json();
                 setError(data.error || 'Failed to create account');
@@ -68,14 +68,19 @@ export default function SignupPage() {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
-                        <input
-                            type="password"
-                            required
-                            className="block w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3.5 text-white placeholder-white/20 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all sm:text-sm"
-                            placeholder="Password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
+                        <div className="space-y-1">
+                            <input
+                                type="password"
+                                required
+                                className="block w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3.5 text-white placeholder-white/20 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all sm:text-sm"
+                                placeholder="Password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                            <p className="px-1 text-[10px] text-indigo-300/40">
+                                Minimum 8 characters required
+                            </p>
+                        </div>
                     </div>
 
                     <button

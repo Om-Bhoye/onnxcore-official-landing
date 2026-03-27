@@ -41,6 +41,21 @@ export default function Hero() {
   // Which cycle is currently active (0 or 1)
   const [activeCycle, setActiveCycle] = useState(0);
 
+  // Authentication State
+  const [user, setUser] = useState<any>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+
+  // Fetch User Auth
+  useEffect(() => {
+    fetch('/api/user/me')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        setUser(data);
+        setAuthLoading(false);
+      })
+      .catch(() => setAuthLoading(false));
+  }, []);
+
   // GSAP entrance animation
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -211,14 +226,19 @@ export default function Hero() {
 
             {/* CTAs */}
             <div ref={ctaRef} className="flex flex-wrap gap-4 mb-10">
-              <Link href="/vendor/apply">
-                <BitcoinButton
-                  showArrow
-                  className="hover:scale-105"
-                >
-                  Become a Vendor
-                </BitcoinButton>
-              </Link>
+              {user ? (
+                <Link href="/dashboard">
+                  <BitcoinButton showArrow className="hover:scale-105">
+                    Go to Dashboard
+                  </BitcoinButton>
+                </Link>
+              ) : (
+                <Link href="/signup">
+                  <BitcoinButton showArrow className="hover:scale-105">
+                    Become a Vendor
+                  </BitcoinButton>
+                </Link>
+              )}
               <Button
                 variant="outline"
                 className="bg-transparent hover:bg-white/5 text-white border border-white/20 rounded-full px-6 lg:px-8 py-3 lg:py-6 text-sm lg:text-base font-medium transition-all duration-300 hover:scale-105 flex items-center gap-2"

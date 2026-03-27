@@ -232,19 +232,12 @@ export default function KYCPage() {
                 lastName: formData.lastName,
                 contactNumber: formData.contactNumber,
                 idNumber: formData.idNumber,
-                idFrontUrl: finalUploads.find(f => f.key === 'id_front')?.url,
-                idBackUrl: finalUploads.find(f => f.key === 'id_back')?.url,
-                facialVideoUrl: finalUploads.find(f => f.key === 'facial_video')?.url,
             };
         } else {
             payload.corporateDetails = {
                 companyName: formData.companyName,
                 contactNumber: formData.contactNumber,
                 taxIdNumber: formData.taxIdNumber,
-                gstCertificateUrl: finalUploads.find(f => f.key === 'gst')?.url,
-                tradeLicenseUrl: finalUploads.find(f => f.key === 'trade')?.url,
-                panCardUrl: finalUploads.find(f => f.key === 'pan')?.url,
-                facialVideoUrl: finalUploads.find(f => f.key === 'facial_video')?.url,
             };
         }
 

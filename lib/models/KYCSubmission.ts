@@ -27,18 +27,11 @@ export interface IKYCSubmission extends Document {
         lastName: string;
         contactNumber: string;
         idNumber: string;
-        idFrontUrl: string;
-        idBackUrl: string;
-        facialVideoUrl: string;
     };
     corporateDetails?: {
         companyName: string;
         contactNumber: string;
         taxIdNumber: string;
-        gstCertificateUrl?: string;
-        tradeLicenseUrl?: string;
-        panCardUrl?: string;
-        facialVideoUrl: string;
     };
     documents: IDocumentRef[];
     createdAt: Date;
@@ -105,18 +98,11 @@ const KYCSubmissionSchema = new Schema(
             lastName: String,
             contactNumber: String,
             idNumber: String,
-            idFrontUrl: String,
-            idBackUrl: String,
-            facialVideoUrl: String,
         },
         corporateDetails: {
             companyName: String,
             contactNumber: String,
             taxIdNumber: String,
-            gstCertificateUrl: String,
-            tradeLicenseUrl: String,
-            panCardUrl: String,
-            facialVideoUrl: String,
         },
         documents: [DocumentRefSchema],
     },

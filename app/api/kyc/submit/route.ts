@@ -23,18 +23,11 @@ const submitKycSchema = z.object({
         lastName: z.string(),
         contactNumber: z.string(),
         idNumber: z.string(),
-        idFrontUrl: z.string().url(),
-        idBackUrl: z.string().url(),
-        facialVideoUrl: z.string().url(),
     }).optional(),
     corporateDetails: z.object({
         companyName: z.string(),
         contactNumber: z.string(),
         taxIdNumber: z.string(),
-        gstCertificateUrl: z.string().url().optional(),
-        tradeLicenseUrl: z.string().url().optional(),
-        panCardUrl: z.string().url().optional(),
-        facialVideoUrl: z.string().url(),
     }).optional(),
     documents: z.array(documentRefSchema),
 });

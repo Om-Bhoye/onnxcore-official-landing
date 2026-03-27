@@ -85,6 +85,7 @@ export async function getCurrentUser() {
     await dbConnect();
 
     const user = await User.findById(payload.userId);
+    if (!user || user.isActive === false) return null;
     return user;
 }
 
