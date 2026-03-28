@@ -12,12 +12,18 @@ import {
     Gift,
     ChevronLeft,
     ChevronRight,
-    ShieldCheck
+    ShieldCheck,
+    ShoppingCart,
+    BarChart3,
+    Wallet
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const sidebarItems = [
     { label: 'Overview', href: '/dashboard', icon: LayoutDashboard },
+    { label: 'Market', href: '/dashboard/market', icon: ShoppingCart },
+    { label: 'Trading', href: '/dashboard/trading', icon: BarChart3 },
+    { label: 'Wallet', href: '/dashboard/wallet', icon: Wallet },
     { label: 'Profile', href: '/dashboard/profile', icon: User },
     { label: 'Settings', href: '/dashboard/settings', icon: Settings },
 ];
