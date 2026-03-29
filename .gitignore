@@ -40,5 +40,4 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-implementation_plan.md
-CLAUDE.md
+
