@@ -15,15 +15,22 @@ import {
     ShieldCheck,
     ShoppingCart,
     BarChart3,
-    Wallet
+    Wallet,
+    ClipboardList,
+    Megaphone
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const sidebarItems = [
+const mainItems = [
     { label: 'Overview', href: '/dashboard', icon: LayoutDashboard },
     { label: 'Market', href: '/dashboard/market', icon: ShoppingCart },
-    { label: 'Trading', href: '/dashboard/trading', icon: BarChart3 },
+    { label: 'Orders', href: '/dashboard/orders', icon: ClipboardList },
+    { label: 'Advertise', href: '/dashboard/advertise', icon: Megaphone },
+    { label: 'Stats', href: '/dashboard/stats', icon: BarChart3 },
     { label: 'Wallet', href: '/dashboard/wallet', icon: Wallet },
+];
+
+const secondaryItems = [
     { label: 'Profile', href: '/dashboard/profile', icon: User },
     { label: 'Settings', href: '/dashboard/settings', icon: Settings },
 ];
@@ -66,9 +73,9 @@ export default function Sidebar() {
                 )}
             </div>
 
-            {/* Navigation */}
-            <nav className="flex-1 px-3 space-y-1 mt-4">
-                {sidebarItems.map((item) => {
+            {/* Main Navigation */}
+            <nav className="flex-1 px-3 space-y-1 mt-4 overflow-y-auto">
+                {mainItems.map((item) => {
                     const isActive = pathname === item.href;
                     return (
                         <Link 
@@ -89,6 +96,35 @@ export default function Sidebar() {
                     );
                 })}
             </nav>
+
+            {/* Account Management Links (at bottom) */}
+            <div className="px-3 space-y-1 mb-2">
+                {!isCollapsed && (
+                    <div className="px-3 py-2">
+                        <span className="text-[10px] font-bold text-white/10 uppercase tracking-[0.2em] mb-2 block">Account</span>
+                    </div>
+                )}
+                {secondaryItems.map((item) => {
+                    const isActive = pathname === item.href;
+                    return (
+                        <Link 
+                            key={item.href}
+                            href={item.href}
+                            className={cn(
+                                "flex items-center gap-3 px-3 py-3 rounded-xl transition-all group",
+                                isActive 
+                                    ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/20" 
+                                    : "text-indigo-100/40 hover:text-white hover:bg-white/5"
+                            )}
+                        >
+                            <item.icon className={cn("w-5 h-5 flex-shrink-0", isActive ? "text-white" : "group-hover:text-indigo-400")} />
+                            {!isCollapsed && (
+                                <span className="text-sm font-medium">{item.label}</span>
+                            )}
+                        </Link>
+                    );
+                })}
+            </div>
 
             {/* Footer */}
             <div className="p-4 border-t border-white/5 space-y-4">
