@@ -65,12 +65,12 @@ export default function Hero() {
       });
       gsap.set(coinsRef.current, {
         opacity: 0,
-        x: 60,
+        y: 40,
         scale: 0.92,
       });
       gsap.set(glowRef.current, {
         opacity: 0,
-        scale: 0.9,
+        scale: 0.85,
       });
       gsap.set([star1Ref.current, star2Ref.current], {
         opacity: 0,
@@ -112,7 +112,7 @@ export default function Hero() {
           coinsRef.current,
           {
             opacity: 1,
-            x: 0,
+            y: 0,
             scale: 1,
             duration: 1,
             ease: 'power3.out',
@@ -167,7 +167,8 @@ export default function Hero() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen w-full flex items-center overflow-hidden pt-24 lg:pt-0"
+      className="relative min-h-screen w-full flex items-center overflow-x-hidden lg:overflow-hidden isolation-auto pt-24 lg:pt-0"
+      style={{ isolation: 'isolate' }}
     >
       {/* Grid Pattern Background */}
       <div className="absolute inset-0 grid-pattern opacity-50" />
@@ -175,7 +176,8 @@ export default function Hero() {
       {/* Radial Glow Behind Coins */}
       <div
         ref={glowRef}
-        className="absolute right-[5vw] top-[15vh] w-[45vw] h-[45vw] glow-violet-soft rounded-full blur-3xl"
+        className="absolute right-[5vw] top-[15vh] w-[45vw] h-[45vw] glow-violet-soft rounded-full blur-3xl pointer-events-none max-w-full will-change-transform"
+        style={{ overflow: "hidden" }}
       />
 
       {/* Decorative Stars */}
@@ -194,38 +196,40 @@ export default function Hero() {
       />
 
       {/* Content Container */}
-      <div className="relative z-10 w-full max-w-[1280px] mx-auto px-6 sm:px-8 lg:px-12 pt-32 lg:pt-36 pb-12">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-8">
-          {/* Left Content */}
-          <div className="flex-1 max-w-xl lg:max-w-2xl flex flex-col">
-            {/* Eyebrow - Centered relative to headline on all screens */}
-            <p className="self-center lg:self-center inline-flex items-center h-10 px-6 bg-white/5 border border-white/10 rounded-full mb-8 text-xs uppercase tracking-[0.14em] text-white/70 transition-all duration-300">
+      <div className="relative z-10 w-full max-w-[1280px] mx-auto px-6 sm:px-8 lg:px-12 pt-6 lg:pt-36 pb-16">
+        <div className="grid grid-cols-2 lg:flex lg:flex-row items-start lg:items-center justify-between gap-x-4 gap-y-6 lg:gap-8">
+          
+          {/* Brand & Text Content - Acts as top-left for Mobile, left-column for Desktop */}
+          <div className="contents lg:flex lg:flex-col lg:flex-1 lg:max-w-2xl">
+            
+            {/* 1. Platform Badge (Mobile: Top) */}
+            <p className="order-1 lg:order-1 col-span-2 w-fit self-start lg:self-center inline-flex items-center h-8 sm:h-10 px-4 sm:px-6 bg-white/5 border border-white/10 rounded-full mb-4 lg:mb-8 text-[9px] sm:text-xs uppercase tracking-[0.14em] text-white/70 transition-all duration-300">
               OnnXcore Platform
             </p>
 
-            {/* Headline */}
+            {/* 2. Red Box: Headline (Mobile: Row 2 Left) */}
             <h1
               ref={headlineRef}
-              className="font-sans font-bold text-4xl sm:text-4xl lg:text-5xl xl:text-6xl text-white leading-[1.1] tracking-tight mb-10 text-left flex flex-col gap-1 sm:gap-2"
+              className="order-2 lg:order-2 col-span-1 self-center font-sans font-bold text-[22px] sm:text-2xl md:text-3xl lg:text-5xl xl:text-6xl text-white leading-[1.1] tracking-tight mb-2 lg:mb-10 text-left lg:text-left flex flex-col gap-1 sm:gap-2"
             >
-              <span className="whitespace-nowrap">Structured USDT Trading</span>
-              <span className="whitespace-nowrap">Consistent Growth</span>
-              <span className="whitespace-nowrap">
+              <span className="whitespace-normal sm:whitespace-nowrap">Structured USDT Trading</span>
+              <span className="whitespace-normal sm:whitespace-nowrap">Consistent Growth</span>
+              <span className="whitespace-normal sm:whitespace-nowrap">
                 <span className="font-serif italic font-medium text-gradient">Daily Earnings</span>
               </span>
             </h1>
 
-            {/* Subheadline */}
+            {/* 3. Description (Mobile: Purple Box - Below) */}
             <p
               ref={subheadlineRef}
-              className="text-cobalt-200 text-base lg:text-lg leading-relaxed mb-10 max-w-lg text-left"
+              className="order-4 lg:order-3 col-span-2 text-cobalt-200 text-xs sm:text-base lg:text-lg leading-relaxed mb-6 lg:mb-10 max-w-lg text-left lg:text-left mx-0 lg:mx-0"
             >
               Access a controlled P2P trading environment with verified
               counterparties, fast settlements, and built-in risk management.
             </p>
 
-            {/* CTAs */}
-            <div ref={ctaRef} className="flex flex-wrap gap-4 mb-10">
+            {/* 4. CTAs (Mobile: Purple Box - Bottom-ish) */}
+            <div ref={ctaRef} className="order-5 lg:order-4 col-span-2 flex flex-wrap items-center justify-start lg:justify-start gap-4 mb-8 lg:mb-10">
               {user ? (
                 <Link href="/dashboard">
                   <BitcoinButton showArrow className="hover:scale-105">
@@ -241,15 +245,15 @@ export default function Hero() {
               )}
               <Button
                 variant="outline"
-                className="bg-transparent hover:bg-white/5 text-white border border-white/20 rounded-full px-6 lg:px-8 py-3 lg:py-6 text-sm lg:text-base font-medium transition-all duration-300 hover:scale-105 flex items-center gap-2"
+                className="bg-transparent hover:bg-white/5 text-white border border-white/20 rounded-full px-5 sm:px-8 py-2 sm:py-6 text-xs sm:text-base font-medium transition-all duration-300 hover:scale-105 flex items-center gap-2"
               >
-                <Play className="w-4 h-4" />
+                <Play className="w-3 h-3 sm:w-4 sm:h-4" />
                 View Platform
               </Button>
             </div>
 
-            {/* Trust Metrics — Cycling Carousel */}
-            <div className="relative h-14 overflow-hidden">
+            {/* 5. Trust Metrics (Mobile: Purple Box - Bottom) */}
+            <div className="order-6 lg:order-5 col-span-2 relative h-14 overflow-hidden">
               <AnimatePresence mode="wait">
                 {statsReady && (
                   <motion.div
@@ -261,7 +265,7 @@ export default function Hero() {
                       duration: 0.6,
                       ease: smoothEase,
                     }}
-                    className="absolute inset-0 flex items-center gap-6 lg:gap-8"
+                    className="absolute inset-0 flex items-center justify-start lg:justify-start gap-4 sm:gap-6 lg:gap-8"
                   >
                     {statCycles[activeCycle].map((stat, index) => (
                       <motion.div
@@ -275,10 +279,10 @@ export default function Hero() {
                         }}
                         className="flex items-center gap-2"
                       >
-                        <span className="text-white font-heading font-bold text-lg lg:text-xl">
+                        <span className="text-white font-heading font-bold text-base sm:text-xl">
                           {stat.value}
                         </span>
-                        <span className="text-cobalt-200 text-xs lg:text-sm">
+                        <span className="text-cobalt-200 text-[10px] sm:text-sm">
                           {stat.label}
                         </span>
                       </motion.div>
@@ -289,16 +293,16 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Right Content - Crypto Coins */}
+          {/* 6. Blue Box: Crypto Coins (Mobile: Row 2 Right - aligned with Headline) */}
           <div
             ref={coinsRef}
-            className="flex-1 flex justify-center lg:justify-end relative"
+            className="order-3 lg:order-6 col-span-1 self-center lg:flex-1 flex justify-end lg:justify-end relative will-change-transform mt-2 lg:mt-0 pt-0 lg:pt-0"
           >
-            <div className="relative w-[55vw] max-w-[380px] lg:w-[26vw] lg:max-w-none">
+            <div className="relative w-full sm:w-[55vw] max-w-[380px] lg:w-[26vw] lg:max-w-none px-0 lg:px-4">
               <img
                 src="/images/crypto-coins.png"
                 alt="3D Cryptocurrency Coins"
-                className="w-full h-auto object-contain float-slow"
+                className="w-full h-auto max-w-full object-contain float-slow select-none"
               />
             </div>
           </div>

@@ -55,15 +55,15 @@ export default function Navbar() {
         : 'bg-white py-4'
         }`}
     >
-      <div className="max-w-[1280px] mx-auto px-6 sm:px-8 lg:px-12">
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-8 lg:px-12">
         <div className="flex items-center justify-between">
 
-          {/* Logo — large like OnnXpay reference */}
-          <div className="flex items-center flex-shrink-0">
+          {/* Logo — Responsive size */}
+          <div className="flex items-center flex-shrink min-w-0">
             <img
               src="/images/logo.png"
               alt="OnnXcore"
-              className="h-10 lg:h-12 w-auto"
+              className="h-8 sm:h-10 lg:h-12 w-auto object-contain"
             />
           </div>
 
@@ -124,17 +124,27 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden text-gray-600 p-2"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? (
-              <X className="w-6 h-6" />
-            ) : (
-              <Menu className="w-6 h-6" />
+          {/* Mobile Layout: Contact Us (if not logged in) + Menu Button */}
+          <div className="flex md:hidden items-center gap-2 flex-shrink-0">
+            {!user && (
+              <Link
+                href="/contact"
+                className="bg-violet text-white px-2.5 py-1.5 rounded-full text-[10px] sm:text-[11px] font-semibold hover:brightness-110 active:scale-95 transition-all whitespace-nowrap max-w-[110px] truncate"
+              >
+                Contact Us
+              </Link>
             )}
-          </button>
+            <button
+              className="text-gray-600 p-1.5"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Menu */}
@@ -152,7 +162,7 @@ export default function Navbar() {
                 </a>
               ))}
               <div className="border-t border-gray-100 pt-4 mt-2">
-                {user ? (
+                {user && (
                   <div className="flex flex-col gap-2">
                     <Link
                       href="/dashboard"
@@ -170,14 +180,6 @@ export default function Navbar() {
                       Sign Out
                     </button>
                   </div>
-                ) : (
-                  <Link
-                    href="/contact"
-                    className="bg-violet text-white w-full text-center py-3 rounded-xl font-semibold block hover:brightness-110 transition-all duration-300"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Contact Us →
-                  </Link>
                 )}
               </div>
             </div>

@@ -35,6 +35,12 @@
   
   
   
+  html, body {
+    overflow-x: hidden;
+    position: relative;
+    max-width: 100%;
+  }
+
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', sans-serif;
@@ -429,21 +435,41 @@
     cursor: pointer;
   }
 
-  .cyber-tracker:hover ~ #cyber-card {
+  .cyber-tracker:hover ~ #cyber-card,
+  #cyber-card.active {
     transition: 300ms;
     filter: brightness(1.2);
     border-color: rgba(56, 114, 240, 0.4);
   }
 
-  .cyber-tracker:hover ~ #cyber-card .cyber-card-glare { opacity: 1; }
-  .cyber-tracker:hover ~ #cyber-card .cyber-glowing-elements .cyber-glow { opacity: 1; }
-  .cyber-tracker:hover ~ #cyber-card .cyber-particles span { animation: particleFloat 2s infinite; }
-  .cyber-tracker:hover ~ #cyber-card .cyber-corner-elements span {
+  .cyber-tracker:hover ~ #cyber-card .cyber-card-glare,
+  #cyber-card.active .cyber-card-glare { opacity: 1; }
+  
+  .cyber-tracker:hover ~ #cyber-card .cyber-glowing-elements .cyber-glow,
+  #cyber-card.active .cyber-glowing-elements .cyber-glow { opacity: 1; }
+  
+  .cyber-tracker:hover ~ #cyber-card .cyber-particles span,
+  #cyber-card.active .cyber-particles span { animation: particleFloat 2s infinite; }
+  
+  .cyber-tracker:hover ~ #cyber-card .cyber-corner-elements span,
+  #cyber-card.active .cyber-corner-elements span {
     border-color: rgba(56, 114, 240, 0.8);
     box-shadow: 0 0 10px rgba(56, 114, 240, 0.5);
   }
 
   @keyframes lineGrow { 0%, 100% { transform: scaleX(0); opacity: 0; } 50% { transform: scaleX(1); opacity: 1; } }
+  
+  @keyframes particleFloat {
+    0%, 100% { transform: translate(0, 0); opacity: 0; }
+    25% { opacity: 1; }
+    50% { transform: translate(calc(var(--x) * 15px), calc(var(--y) * 15px)); }
+    75% { opacity: 1; }
+  }
+
+  @keyframes scanMove {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+  }
   
   /* Safety Card Style */
   .safety-card {

@@ -100,7 +100,7 @@ export default function Footer() {
   return (
     <footer
       ref={sectionRef}
-      className="relative w-full pt-20 lg:pt-32 pb-8"
+      className="relative w-full min-h-[calc(100vh-72px)] lg:min-h-0 flex flex-col pt-16 sm:pt-20 lg:pt-32 pb-8"
     >
       {/* Background */}
       <div className="absolute inset-0 bg-cobalt-900" />
@@ -109,95 +109,99 @@ export default function Footer() {
       {/* Top Gradient Border */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-violet/50 to-transparent" />
 
-      <div className="relative z-10 w-full px-4 sm:px-6 lg:px-8 xl:px-12">
-        {/* CTA Section */}
-        <div ref={ctaRef} className="text-center mb-16 lg:mb-24">
-          <h2 className="font-heading font-bold text-3xl sm:text-4xl lg:text-5xl xl:text-6xl text-white mb-6">
-            Start <span className="font-serif italic font-medium text-gradient">Trading with{' '}</span>
-            <span className="font-serif italic font-medium text-gradient">Structure</span>
-          </h2>
-          <p className="text-cobalt-200 text-base lg:text-lg max-w-xl mx-auto mb-8">
-            Join a platform built for speed, safety, and consistent execution.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link href="/signup">
-              <BitcoinButton 
-                showArrow 
-                className="px-8 py-6 text-base"
+      <div className="relative z-10 w-full flex-1 flex flex-col justify-between px-6 sm:px-8 lg:px-12 xl:px-16">
+        {/* Top Content Wrapper */}
+        <div className="flex flex-col">
+          {/* CTA Section */}
+          <div ref={ctaRef} className="text-center mb-12 sm:mb-16 lg:mb-24">
+            <h2 className="font-heading font-bold text-3xl sm:text-4xl lg:text-5xl xl:text-6xl text-white mb-6">
+              Start <span className="font-serif italic font-medium text-gradient">Trading with{' '}</span>
+              <span className="font-serif italic font-medium text-gradient">Structure</span>
+            </h2>
+            <p className="text-cobalt-200 text-sm sm:text-base lg:text-lg max-w-xl mx-auto mb-8">
+              Join a platform built for speed, safety, and consistent execution.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Link href="/signup">
+                <BitcoinButton
+                  showArrow
+                  className="px-10 py-4 h-14 sm:h-16 flex items-center justify-center min-w-[200px] text-base"
+                >
+                  Create Account
+                </BitcoinButton>
+              </Link>
+              <button
+                className="bg-transparent hover:bg-white/5 text-white border-2 border-white/20 rounded-full px-10 py-4 h-14 sm:h-16 flex items-center justify-center min-w-[200px] text-base font-medium transition-all duration-300 hover:scale-105"
               >
-                Create Account
-              </BitcoinButton>
-            </Link>
-            <button
-              className="bg-transparent hover:bg-white/5 text-white border border-white/20 rounded-full px-8 py-6 text-base font-medium transition-all duration-300 hover:scale-105"
-            >
-              Talk to Sales
-            </button>
+                Talk to Sales
+              </button>
+            </div>
+          </div>
+
+          {/* Links Section */}
+          <div ref={linksRef} className="border-t border-white/10 pt-10 sm:pt-12 lg:pt-16">
+            <div className="grid grid-cols-3 md:grid-cols-4 gap-y-12 gap-x-4 md:gap-12 mb-10 sm:mb-12">
+              {/* Logo Column */}
+              <div className="col-span-3 md:col-span-1 flex flex-col items-center md:items-start text-center md:text-left mb-8 md:mb-0">
+                <div className="flex items-center relative mb-6 w-max mx-auto md:mx-0">
+                  <div className="absolute inset-y-0 -inset-x-4 sm:-inset-x-8 bg-[#3872f0]/60 blur-[20px] sm:blur-[30px] rounded-[100%] pointer-events-none" />
+                  <img
+                    src="/images/logo.png"
+                    alt="OnnXcore"
+                    className="relative z-10 h-8 sm:h-13 lg:h-15 w-auto drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]"
+                  />
+                </div>
+                <p className="text-cobalt-200 text-[11px] sm:text-sm leading-relaxed max-w-[280px] sm:max-w-xs md:max-w-none">
+                  Structured USDT trading for consistent <br /> 
+                  <span className="font-serif italic font-medium text-gradient">daily earnings.</span>
+                </p>
+              </div>
+
+              {/* Link Columns */}
+              {Object.entries(footerLinks).map(([key, section]) => (
+                <div key={key} className="text-center md:text-left">
+                  <h4 className="font-heading font-semibold text-white text-[11px] sm:text-sm uppercase tracking-wider mb-4">
+                    {section.title}
+                  </h4>
+                  <ul className="space-y-2 sm:space-y-3">
+                    {section.links.map((link) => (
+                      <li key={link}>
+                        <a
+                          href="#"
+                          className="text-cobalt-200 text-xs sm:text-sm transition-all duration-300 hover:bg-[linear-gradient(135deg,#3872f0_0%,#F7931A_100%)] hover:bg-clip-text hover:text-transparent"
+                        >
+                          {link}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Links Section */}
-        <div ref={linksRef} className="border-t border-white/10 pt-12 lg:pt-16">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12 mb-12">
-            {/* Logo Column */}
-            <div className="col-span-2 md:col-span-1">
-              <div className="flex items-center relative mb-6 w-max">
-                <div className="absolute inset-y-0 -inset-x-8 bg-[#3872f0]/60 blur-[30px] rounded-[100%] pointer-events-none" />
-                <img 
-                  src="/images/logo.png" 
-                  alt="OnnXcore" 
-                  className="relative z-10 h-16 lg:h-15 w-auto drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]" 
-                />
-              </div>
-              <p className="text-cobalt-200 text-sm leading-relaxed">
-                Structured USDT trading for consistent daily earnings.
-              </p>
-            </div>
+        {/* Bottom Bar — Pushed to very bottom */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-4 pt-8 pb-4 border-t border-white/10 text-center sm:text-left">
+          <p className="text-cobalt-200 text-[10px] sm:text-xs">
+            © 2026 OnnXcore. All rights reserved.
+          </p>
 
-            {/* Link Columns */}
-            {Object.entries(footerLinks).map(([key, section]) => (
-              <div key={key}>
-                <h4 className="font-heading font-semibold text-white text-sm uppercase tracking-wider mb-4">
-                  {section.title}
-                </h4>
-                <ul className="space-y-3">
-                  {section.links.map((link) => (
-                    <li key={link}>
-                      <a
-                        href="#"
-                        className="text-cobalt-200 text-sm transition-all duration-300 hover:bg-[linear-gradient(135deg,#3872f0_0%,#F7931A_100%)] hover:bg-clip-text hover:text-transparent"
-                      >
-                        {link}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-
-          {/* Bottom Bar */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-white/10">
-            <p className="text-cobalt-200 text-xs">
-              © 2026 OnnXcore. All rights reserved.
-            </p>
-
-            {/* Social Links */}
-            <div className="flex items-center gap-4">
-              {socialLinks.map((social) => {
-                const Icon = social.icon;
-                return (
-                  <a
-                    key={social.label}
-                    href={social.href}
-                    aria-label={social.label}
-                    className="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center text-cobalt-200 hover:text-white hover:bg-[linear-gradient(135deg,#3872f0_0%,#F7931A_100%)] hover:shadow-[0_0_15px_rgba(56,114,240,0.4)] transition-all duration-300"
-                  >
-                    <Icon className="w-4 h-4" />
-                  </a>
-                );
-              })}
-            </div>
+          {/* Social Links */}
+          <div className="flex items-center gap-4">
+            {socialLinks.map((social) => {
+              const Icon = social.icon;
+              return (
+                <a
+                  key={social.label}
+                  href={social.href}
+                  aria-label={social.label}
+                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/5 flex items-center justify-center text-cobalt-200 hover:text-white hover:bg-[linear-gradient(135deg,#3872f0_0%,#F7931A_100%)] hover:shadow-[0_0_15px_rgba(56,114,240,0.4)] transition-all duration-300"
+                >
+                  <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                </a>
+              );
+            })}
           </div>
         </div>
       </div>

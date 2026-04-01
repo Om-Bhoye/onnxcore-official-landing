@@ -4,6 +4,8 @@ import { useEffect, useRef } from 'react';
 import { TrendingUp, Zap, BarChart3 } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -32,6 +34,15 @@ export default function Features() {
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const [activeMobileIndex, setActiveMobileIndex] = useState(0);
+
+  // Autoplay for mobile slider
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveMobileIndex((prev) => (prev + 1) % features.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -83,12 +94,12 @@ export default function Features() {
     <section
       ref={sectionRef}
       id="about"
-      className="relative w-full py-20 lg:py-32"
+      className="relative w-full py-16 lg:py-32"
     >
       {/* Background Pattern */}
       <div className="absolute inset-0 grid-pattern opacity-30" />
 
-      <div className="relative z-10 w-full px-4 sm:px-6 lg:px-8 xl:px-12">
+      <div className="relative z-10 w-full px-6 sm:px-8 lg:px-12 xl:px-16">
         {/* Section Header */}
         <div ref={titleRef} className="mb-12 lg:mb-16">
           <p className="inline-flex items-center px-4 py-2 bg-white/5 border border-white/10 rounded-full mb-4 text-sm text-white/70">
@@ -99,63 +110,100 @@ export default function Features() {
           </h2>
         </div>
 
-        {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {features.map((feature, index) => {
-            return (
-              <div
-                key={index}
-                ref={(el) => { cardsRef.current[index] = el; }}
-                className="feature-card min-h-[360px] group"
-              >
-                {/* Custom SVG Shape from provided code */}
-                <div className="feature-card-icon w-32 h-32">
-                  <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg" xmlSpace="preserve" version="1.1" shapeRendering="geometricPrecision" textRendering="geometricPrecision" imageRendering="optimizeQuality" fillRule="evenodd" clipRule="evenodd" viewBox="0 0 784.37 1277.39">
-                    <g id="Layer_x0020_1">
-                      <g id="_1421394342400">
-                        <g>
-                          <polygon fill="#3872f0" fillRule="nonzero" points="392.07,0 383.5,29.11 383.5,873.74 392.07,882.29 784.13,650.54" />
-                          <polygon fill="#F7931A" fillRule="nonzero" points="392.07,0 -0,650.54 392.07,882.29 392.07,472.33" />
-                          <polygon fill="#1425c2" fillRule="nonzero" points="392.07,956.52 387.24,962.41 387.24,1263.28 392.07,1277.38 784.37,724.89" />
-                          <polygon fill="#F7931A" fillRule="nonzero" points="392.07,1277.38 392.07,956.52 -0,724.89" />
-                          <polygon fill="#1425c2" fillRule="nonzero" points="392.07,882.29 784.13,650.54 392.07,472.33" />
-                          <polygon fill="#3872f0" fillRule="nonzero" points="0,650.54 392.07,882.29 392.07,472.33" />
-                        </g>
-                      </g>
-                    </g>
-                  </svg>
-                </div>
+        {/* Features Content */}
+        <div className="relative">
+          {/* Desktop & Tablet Grid */}
+          <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            {features.map((feature, index) => (
+              <FeatureCard 
+                key={index} 
+                feature={feature} 
+                index={index} 
+                setRef={(el) => { cardsRef.current[index] = el; }} 
+              />
+            ))}
+          </div>
 
-                {/* Always visible Content */}
-                <div className="feature-card-content">
-                  <h3 className="font-heading font-bold text-xl lg:text-2xl text-white mb-1">
-                    {feature.title}
-                  </h3>
-                  <span className="text-[10px] text-white/40 font-bold uppercase tracking-[0.2em] mb-4">
-                    OnnXcore Feature
-                  </span>
-                  
-                  <p className="text-white font-semibold text-sm lg:text-base leading-relaxed mb-6">
-                    {feature.description}
-                  </p>
-
-                  <ul className="space-y-2">
-                    {feature.points.map((point, pointIndex) => (
-                      <li
-                        key={pointIndex}
-                        className="flex items-center justify-center gap-2 text-xs text-cobalt-200"
-                      >
-                        <div className="w-1 h-1 rounded-full bg-violet" />
-                        {point}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            );
-          })}
+          {/* Mobile Slider */}
+          <div className="block md:hidden">
+            <div className="relative h-[420px] w-full max-w-[340px] mx-auto overflow-visible">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeMobileIndex}
+                  initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 20, scale: 0.95 }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
+                  className="absolute inset-0"
+                >
+                  <FeatureCard 
+                    feature={features[activeMobileIndex]} 
+                    index={activeMobileIndex} 
+                  />
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </div>
         </div>
       </div>
     </section>
+  );
+}
+
+interface FeatureCardProps {
+  feature: typeof features[0];
+  index: number;
+  setRef?: (el: HTMLDivElement | null) => void;
+}
+
+function FeatureCard({ feature, index, setRef }: FeatureCardProps) {
+  return (
+    <div
+      ref={setRef}
+      className="feature-card h-full min-h-[380px] group flex flex-col justify-center"
+    >
+      {/* Background Icon (Ethereum-style SVG) */}
+      <div className="feature-card-icon w-32 h-32 opacity-[0.08] lg:opacity-[0.1] pointer-events-none transition-all duration-500 group-hover:scale-110">
+        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg" xmlSpace="preserve" version="1.1" shapeRendering="geometricPrecision" textRendering="geometricPrecision" imageRendering="optimizeQuality" fillRule="evenodd" clipRule="evenodd" viewBox="0 0 784.37 1277.39">
+          <g id="Layer_x0020_1">
+            <g id="_1421394342400">
+              <g>
+                <polygon fill="#3872f0" fillRule="nonzero" points="392.07,0 383.5,29.11 383.5,873.74 392.07,882.29 784.13,650.54" />
+                <polygon fill="#F7931A" fillRule="nonzero" points="392.07,0 -0,650.54 392.07,882.29 392.07,472.33" />
+                <polygon fill="#1425c2" fillRule="nonzero" points="392.07,956.52 387.24,962.41 387.24,1263.28 392.07,1277.38 784.37,724.89" />
+                <polygon fill="#F7931A" fillRule="nonzero" points="392.07,1277.38 392.07,956.52 -0,724.89" />
+                <polygon fill="#1425c2" fillRule="nonzero" points="392.07,882.29 784.13,650.54 392.07,472.33" />
+                <polygon fill="#3872f0" fillRule="nonzero" points="0,650.54 392.07,882.29 392.07,472.33" />
+              </g>
+            </g>
+          </g>
+        </svg>
+      </div>
+
+      <div className="feature-card-content p-6 flex flex-col items-center">
+        <h3 className="font-heading font-bold text-xl lg:text-2xl text-white mb-1">
+          {feature.title}
+        </h3>
+        <span className="text-[10px] text-white/40 font-bold uppercase tracking-[0.2em] mb-4">
+          OnnXcore Feature
+        </span>
+        
+        <p className="text-white/80 font-medium text-sm lg:text-base leading-relaxed mb-6 px-2">
+          {feature.description}
+        </p>
+
+        <ul className="space-y-2">
+          {feature.points.map((point, pointIndex) => (
+            <li
+              key={pointIndex}
+              className="flex items-center justify-center gap-2 text-xs text-cobalt-200"
+            >
+              <div className="w-1 h-1 rounded-full bg-violet" />
+              {point}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
   );
 }
