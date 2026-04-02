@@ -3,13 +3,20 @@
 import { useState, useEffect } from 'react';
 import { Menu, X, UserCircle, LogOut, LayoutDashboard, ChevronDown } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import Link from 'next/link';
+
+interface User {
+  name: string;
+  email: string;
+  role: string;
+}
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -60,10 +67,13 @@ export default function Navbar() {
 
           {/* Logo — Responsive size */}
           <div className="flex items-center flex-shrink min-w-0">
-            <img
+            <Image
               src="/images/logo.png"
               alt="OnnXcore"
+              width={180}
+              height={48}
               className="h-8 sm:h-10 lg:h-12 w-auto object-contain"
+              priority
             />
           </div>
 

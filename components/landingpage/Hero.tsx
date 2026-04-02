@@ -1,12 +1,20 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Play, Sparkles } from 'lucide-react';
+import { Play } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import BitcoinButton from '@/components/landingpage/BitcoinButton';
 import gsap from 'gsap';
 import { motion, AnimatePresence } from 'framer-motion';
+
+interface User {
+  name: string;
+  email: string;
+  role: string;
+  kycStatus: string;
+}
 
 // Two stat groups that cycle
 const statCycles = [
@@ -42,7 +50,7 @@ export default function Hero() {
   const [activeCycle, setActiveCycle] = useState(0);
 
   // Authentication State
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
 
   // Fetch User Auth
@@ -181,19 +189,33 @@ export default function Hero() {
       />
 
       {/* Decorative Stars */}
-      <img
+      <div
         ref={star1Ref}
-        src="/images/star.png"
-        alt=""
-        className="absolute left-[6vw] top-[18vh] w-10 h-10 md:w-11 md:h-11 object-contain star-twinkle z-10"
-      />
-      <img
+        className="absolute left-[6vw] top-[18vh] z-10"
+      >
+        <Image
+          src="/images/star.png"
+          alt=""
+          width={44}
+          height={44}
+          className="w-10 h-10 md:w-11 md:h-11 object-contain star-twinkle"
+          priority
+        />
+      </div>
+      <div
         ref={star2Ref}
-        src="/images/star.png"
-        alt=""
-        className="absolute right-[15vw] bottom-[25vh] w-6 h-6 md:w-8 md:h-8 object-contain star-twinkle z-10"
+        className="absolute right-[15vw] bottom-[25vh] z-10"
         style={{ animationDelay: '1s' }}
-      />
+      >
+        <Image
+          src="/images/star.png"
+          alt=""
+          width={32}
+          height={32}
+          className="w-6 h-6 md:w-8 md:h-8 object-contain star-twinkle"
+          priority
+        />
+      </div>
 
       {/* Content Container */}
       <div className="relative z-10 w-full max-w-[1280px] mx-auto px-6 sm:px-8 lg:px-12 pt-6 lg:pt-36 pb-16">
@@ -293,16 +315,18 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* 6. Blue Box: Crypto Coins (Mobile: Row 2 Right - aligned with Headline) */}
           <div
             ref={coinsRef}
-            className="order-3 lg:order-6 col-span-1 self-center lg:flex-1 flex justify-end lg:justify-end relative will-change-transform mt-2 lg:mt-0 pt-0 lg:pt-0"
+            className="order-3 lg:order-6 col-span-1 self-center lg:flex-1 flex justify-end lg:justify-end relative architecture-image mt-2 lg:mt-0 pt-0 lg:pt-0"
           >
             <div className="relative w-full sm:w-[55vw] max-w-[380px] lg:w-[26vw] lg:max-w-none px-0 lg:px-4">
-              <img
+              <Image
                 src="/images/crypto-coins.png"
                 alt="3D Cryptocurrency Coins"
+                width={600}
+                height={600}
                 className="w-full h-auto max-w-full object-contain float-slow select-none"
+                priority
               />
             </div>
           </div>

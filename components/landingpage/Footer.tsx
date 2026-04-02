@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { Send, Code, Globe, MessageCircle } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import BitcoinButton from '@/components/landingpage/BitcoinButton';
 import gsap from 'gsap';
@@ -145,10 +146,13 @@ export default function Footer() {
               <div className="col-span-3 md:col-span-1 flex flex-col items-center md:items-start text-center md:text-left mb-8 md:mb-0">
                 <div className="flex items-center relative mb-6 w-max mx-auto md:mx-0">
                   <div className="absolute inset-y-0 -inset-x-4 sm:-inset-x-8 bg-[#3872f0]/60 blur-[20px] sm:blur-[30px] rounded-[100%] pointer-events-none" />
-                  <img
+                  <Image
                     src="/images/logo.png"
                     alt="OnnXcore"
+                    width={220}
+                    height={60}
                     className="relative z-10 h-8 sm:h-13 lg:h-15 w-auto drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]"
+                    priority
                   />
                 </div>
                 <p className="text-cobalt-200 text-[11px] sm:text-sm leading-relaxed max-w-[280px] sm:max-w-xs md:max-w-none">
